@@ -1,0 +1,6 @@
+*.o
+*.cpp
+*.stash
+build/*
+*pro.user
+Makefile
