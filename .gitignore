@@ -1,6 +1,9 @@
 *.o
 *.cpp
+!main.cpp
+
 *.stash
 build/*
 *pro.user
 Makefile
+exham
