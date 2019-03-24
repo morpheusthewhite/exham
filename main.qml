@@ -9,6 +9,12 @@ import "src/util.js" as Util
 ApplicationWindow {
     id: main
 
+    // centers the window in the screen
+    Component.onCompleted: {
+        setX(Screen.width / 2 - width / 2);
+        setY(Screen.height / 2 - height / 2);
+    }
+
     width: 300
     height: 300
     visible: true
@@ -22,12 +28,18 @@ ApplicationWindow {
     property int padding: 4
 
     property int lineWidth: sepSpace - 2*padding
-    property int lineLength: width - 2*borderSpace
+    property int lineLengthH: width - 2*borderSpace
+    property int lineLengthV: height - 2*borderSpace
+
+    // these are the dimensions of the box containing the signs (X or O)
+    property int boxHeight: cellHeight - 3*padding
+    property int boxWidth: cellWidth - 3*padding
 
     SystemPalette { id: systemP; colorGroup: SystemPalette.Active}
 
     Repeater{
         model: 9
+
 
         Cell { height: main.cellHeight; width: main.cellWidth
             row: index%3; column: Math.floor(index/3) }
@@ -43,7 +55,7 @@ ApplicationWindow {
             startY: Util.getLineY(1, true)
 
             PathLine{
-                relativeX: lineLength
+                relativeX: lineLengthH
                 relativeY: 0
             }
         }
@@ -57,7 +69,7 @@ ApplicationWindow {
             startY: Util.getLineY(2, true)
 
             PathLine{
-                relativeX: lineLength
+                relativeX: lineLengthH
                 relativeY: 0
             }
         }
@@ -72,7 +84,7 @@ ApplicationWindow {
 
             PathLine{
                 relativeX: 0
-                relativeY: lineLength
+                relativeY: lineLengthV
             }
         }
 
@@ -86,7 +98,7 @@ ApplicationWindow {
 
             PathLine{
                 relativeX: 0
-                relativeY: lineLength
+                relativeY: lineLengthV
             }
         }
     }

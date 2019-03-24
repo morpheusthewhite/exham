@@ -3,5 +3,7 @@
         <file>main.qml</file>
         <file>qml/Cell.qml</file>
         <file>src/util.js</file>
+        <file>qml/Xtic.qml</file>
+        <file>qml/Otic.qml</file>
     </qresource>
 </RCC>

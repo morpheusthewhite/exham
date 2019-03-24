@@ -12,12 +12,10 @@ Item {
 
     signal clicked()
 
-    SystemPalette { id: systemPalette; colorGroup: SystemPalette.Active }
-
     Rectangle {
         id: rectangle
         anchors.fill: parent
-        color: systemPalette.light
+        color: "transparent"
     }
 
     MouseArea {
