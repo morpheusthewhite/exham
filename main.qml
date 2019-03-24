@@ -35,14 +35,14 @@ ApplicationWindow {
     property int boxHeight: cellHeight - 3*padding
     property int boxWidth: cellWidth - 3*padding
 
+    property int turn: 0
     SystemPalette { id: systemP; colorGroup: SystemPalette.Active}
 
     Repeater{
         model: 9
 
-
         Cell { height: main.cellHeight; width: main.cellWidth
-            row: index%3; column: Math.floor(index/3) }
+            column: index%3; row: Math.floor(index/3) }
     }
 
     Shape{

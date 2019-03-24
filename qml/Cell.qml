@@ -7,10 +7,8 @@ Item {
     property var row
     property var column
 
-    x: Util.getCellX(row)
-    y: Util.getCellY(column)
-
-    signal clicked()
+    x: Util.getCellX(column)
+    y: Util.getCellY(row)
 
     Rectangle {
         id: rectangle
@@ -21,6 +19,6 @@ Item {
     MouseArea {
         id: mouseArea
         anchors.fill: parent
-        onClicked: cell.clicked()
+        onClicked: Util.clicked(row, column)
     }
 }
