@@ -11,6 +11,7 @@ const SIGN  = {
     EMPTY: 2
 };
 
+// starts the match by resetting the board
 function startMatch(){
     board = new Array(9)
 
@@ -21,6 +22,7 @@ function startMatch(){
     console.log("Match started")
 }
 
+// handles the click in a certain cell
 function clicked(row, column){
     if(board[row*3 + column] !== SIGN.EMPTY) return
 
@@ -31,9 +33,10 @@ function clicked(row, column){
     if (sign != -1) board[row*3 + column] = sign;
     main.turn++;
 
-    checkVictory(sign);
+    if(checkVictory(sign)) console.log("someone won")
 }
 
+// creates an O in the given position
 function createO(row, column){
     if (oComponent == null) oComponent = Qt.createComponent("../qml/Otic.qml")
 
@@ -55,6 +58,7 @@ function createO(row, column){
     }
 }
 
+// creates an X in the given position
 function createX(row, column){
     if (xComponent == null) xComponent = Qt.createComponent("../qml/Xtic.qml")
 
@@ -76,9 +80,24 @@ function createX(row, column){
     }
 }
 
+// checks if the given sign has scored in the rows
+function checkColumns(sign){
 
-function checkRow(sign){
+    for(var i=0; i<3; i++){
+        var victory = true;
 
+        for(var j=0; j<3; j++){
+            if(board[i+3*j] !== sign) { victory = false; break; }
+        }
+
+        if(victory) return true;
+    }
+
+    return false
+}
+
+// checks if the given sign has scored in the columns
+function checkRows(sign){
     for(var i=0; i<9; i+=3){
         var victory = true;
 
@@ -92,6 +111,14 @@ function checkRow(sign){
     return false
 }
 
+// checks if the given sign has scored in the diagonals
+function checkDiagonals(sign){
+    if(board[1 + 3*1] !== sign) return false
+    else if (board[0] === sign && board[3*2 + 2] === sign) return true
+    else if (board[0*3 + 2] === sign && board[3*2 + 0] === sign) return true
+    else return false
+}
+
 function checkVictory(sign){
-    console.log(checkRow(sign))
+    return checkColumns(sign) || checkDiagonals(sign) || checkRows(sign)
 }
