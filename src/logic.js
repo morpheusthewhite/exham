@@ -22,12 +22,11 @@ function startMatch(){
 }
 
 function clicked(row, column){
-//    if(board[row*3 + column] !== SIGN.EMPTY)
-        console.log(board[row*3 + column])
+    if(board[row*3 + column] !== SIGN.EMPTY) return
 
     var sign = -1;
-    if(main.turn%2 == 0) { if(!createX(row, column)) sign = SIGN.XSIGN}
-    else { if(!createO(row, column)) sign = SIGN.YSIGN }
+    if(main.turn%2 == 0) { if(createX(row, column) !== null) sign = SIGN.XSIGN}
+    else { if(createO(row, column) !== null) sign = SIGN.YSIGN }
 
     if (sign != -1) board[row*3 + column] = sign;
     main.turn++;
