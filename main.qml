@@ -37,8 +37,6 @@ ApplicationWindow {
     property int boxHeight: cellHeight - 3*padding
     property int boxWidth: cellWidth - 3*padding
 
-    property int turn: 0
-
     signal clickedCell(int row, int column)
     onClickedCell: Logic.clicked(row, column)
 

@@ -3,7 +3,13 @@
 
 var xComponent;
 var oComponent;
+
 var board;
+var gameOver;
+var turn;
+
+// order must follow game consecution (accessed using XSIGN and YSIGN)
+const players = ["X", "O"];
 
 const SIGN  = {
     XSIGN: 0,
@@ -19,21 +25,28 @@ function startMatch(){
         board[i] = SIGN.EMPTY;
     }
 
+    gameOver = false;
+    turn = 0;
+
     console.log("Match started")
 }
 
 // handles the click in a certain cell
 function clicked(row, column){
-    if(board[row*3 + column] !== SIGN.EMPTY) return
+    if(board[row*3 + column] !== SIGN.EMPTY || gameOver) return
 
     var sign = -1;
-    if(main.turn%2 == 0) { if(createX(row, column) !== null) sign = SIGN.XSIGN}
+    if(turn%2 == 0) { if(createX(row, column) !== null) sign = SIGN.XSIGN}
     else { if(createO(row, column) !== null) sign = SIGN.YSIGN }
 
     if (sign != -1) board[row*3 + column] = sign;
-    main.turn++;
+    turn++;
 
-    if(checkVictory(sign)) console.log("someone won")
+    if(checkVictory(sign)){
+        gameOver = true;
+
+        console.log(players[sign] + " just won")
+    }
 }
 
 // creates an O in the given position
