@@ -5,5 +5,6 @@
         <file>src/util.js</file>
         <file>qml/Xtic.qml</file>
         <file>qml/Otic.qml</file>
+        <file>src/logic.js</file>
     </qresource>
 </RCC>

@@ -5,6 +5,7 @@ import QtQuick.Shapes 1.12
 
 import "qml"
 import "src/util.js" as Util
+import "src/logic.js" as Logic
 
 ApplicationWindow {
     id: main
@@ -13,6 +14,7 @@ ApplicationWindow {
     Component.onCompleted: {
         setX(Screen.width / 2 - width / 2);
         setY(Screen.height / 2 - height / 2);
+        Logic.startMatch()
     }
 
     width: 300
@@ -36,13 +38,19 @@ ApplicationWindow {
     property int boxWidth: cellWidth - 3*padding
 
     property int turn: 0
+
+    signal clickedCell(int row, int column)
+    onClickedCell: Logic.clicked(row, column)
+
     SystemPalette { id: systemP; colorGroup: SystemPalette.Active}
 
     Repeater{
         model: 9
 
         Cell { height: main.cellHeight; width: main.cellWidth
-            column: index%3; row: Math.floor(index/3) }
+            column: index%3; row: Math.floor(index/3);
+            onClicked: clickedCell(row, column)
+        }
     }
 
     Shape{
