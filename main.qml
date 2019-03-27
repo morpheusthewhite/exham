@@ -17,25 +17,32 @@ ApplicationWindow {
         Logic.startMatch()
     }
 
-    width: 300
-    height: 300
+    width: boardWidth
+    height: boardHeight + bottomBoxHeight
     visible: true
 
     color: systemP.window
 
+    // board properties
+    property int boardHeight: 300
+    property int boardWidth: 300
+
     property int borderSpace: 10
     property int sepSpace: 10
-    property int cellWidth: (width - borderSpace*2 - sepSpace*2)/3
-    property int cellHeight: (height - borderSpace*2 - sepSpace*2)/3
+    property int cellWidth: (boardWidth - borderSpace*2 - sepSpace*2)/3
+    property int cellHeight: (boardHeight - borderSpace*2 - sepSpace*2)/3
     property int padding: 4
 
     property int lineWidth: sepSpace - 2*padding
-    property int lineLengthH: width - 2*borderSpace
-    property int lineLengthV: height - 2*borderSpace
+    property int lineLengthH: boardWidth - 2*borderSpace
+    property int lineLengthV: boardHeight - 2*borderSpace
 
     // these are the dimensions of the box containing the signs (X or O)
     property int boxHeight: cellHeight - 3*padding
     property int boxWidth: cellWidth - 3*padding
+
+    // bottom buttons properties
+    property int bottomBoxHeight: 50
 
     signal clickedCell(int row, int column)
     onClickedCell: Logic.clicked(row, column)
@@ -107,5 +114,11 @@ ApplicationWindow {
                 relativeY: lineLengthV
             }
         }
+    }
+
+    ButtonsBox{
+        anchors.bottom: parent.bottom
+        height: bottomBoxHeight
+        width: parent.width
     }
 }
