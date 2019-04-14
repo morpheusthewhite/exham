@@ -3,6 +3,7 @@ import QtQuick.Shapes 1.12
 
 Item {
     id: otic
+    z: 50
 
     SystemPalette { id: oSP }
 
@@ -15,7 +16,7 @@ Item {
             fillColor: "transparent"
 
             strokeWidth: lineWidth
-            strokeColor: oSP.light
+            strokeColor: oSP.midlight
 
             PathArc {
                 x: otic.x + boxWidth/2; y: otic.y + boxHeight
@@ -32,7 +33,7 @@ Item {
             fillColor: "transparent"
 
             strokeWidth: lineWidth
-            strokeColor: oSP.light
+            strokeColor: oSP.midlight
 
             PathArc {
                 x: otic.x + boxWidth/2; y: otic.y

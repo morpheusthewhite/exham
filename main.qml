@@ -2,6 +2,7 @@ import QtQuick 2.6
 import QtQuick.Window 2.2
 import QtQuick.Controls 1.0
 import QtQuick.Shapes 1.12
+import QtQuick.Dialogs 1.3
 
 import "qml"
 import "src/util.js" as Util
@@ -18,7 +19,12 @@ ApplicationWindow {
     }
 
     width: boardWidth
+    maximumWidth: width
+    minimumWidth: width
+
     height: boardHeight + bottomBoxHeight
+    maximumHeight: height
+    minimumHeight: height
     visible: true
 
     color: systemP.window
@@ -120,5 +126,29 @@ ApplicationWindow {
         anchors.bottom: parent.bottom
         height: bottomBoxHeight
         width: parent.width
+
+        onMatchStart: Logic.startMatch()
+    }
+
+    function showDialog(winner) {
+        dialogWindow.show(winner)
+    }
+
+    function hideDialog(){
+        dialogWindow.hide()
+    }
+
+    MessageDialog {
+        id: dialogWindow
+        title: "And the winner is..."
+
+        function hide(){
+            visible = false
+        }
+
+        function show(winner){
+            text ="<font color=\"" + systemP.buttonText + "\">" + winner + " just won</font>"
+            open()
+        }
     }
 }

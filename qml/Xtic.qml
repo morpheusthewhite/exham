@@ -3,6 +3,7 @@ import QtQuick.Shapes 1.12
 
 Item {
     id: xtic
+    z: 50
 
     SystemPalette { id: xSP }
 
@@ -14,7 +15,7 @@ Item {
             startX: x
             startY: y
             strokeWidth: lineWidth
-            strokeColor: xSP.light
+            strokeColor: xSP.midlight
 
             PathLine{
                 relativeX: x + boxWidth
@@ -27,7 +28,7 @@ Item {
             startX: x
             startY: y + boxHeight
             strokeWidth: lineWidth
-            strokeColor: xSP.light
+            strokeColor: xSP.midlight
 
             PathLine{
                 relativeX: x + boxWidth

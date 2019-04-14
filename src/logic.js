@@ -7,6 +7,7 @@ var oComponent;
 var board;
 var gameOver;
 var turn;
+var addedTicks;
 
 // order must follow game consecution (accessed using XSIGN and YSIGN)
 const players = ["X", "O"];
@@ -19,7 +20,19 @@ const SIGN  = {
 
 // starts the match by resetting the board
 function startMatch(){
+    main.hideDialog();
+
     board = new Array(9)
+
+//    if(addedTicks === null) addedTicks = new Array(0)
+//    else {
+//        console.log("clearing board")
+
+//        var elem
+//        while((elem = addedTicks.pop()) !== null){
+//            destroy(elem)
+//        }
+//    }
 
     for(var i=0; i<9; i++){
         board[i] = SIGN.EMPTY;
@@ -36,16 +49,20 @@ function clicked(row, column){
     if(board[row*3 + column] !== SIGN.EMPTY || gameOver) return
 
     var sign = -1;
-    if(turn%2 == 0) { if(createX(row, column) !== null) sign = SIGN.XSIGN}
-    else { if(createO(row, column) !== null) sign = SIGN.YSIGN }
+    var tick;
+
+    if(turn%2 == 0) { if((tick=createX(row, column)) !== null) sign = SIGN.XSIGN}
+    else { if((tick=createO(row, column)) !== null) sign = SIGN.YSIGN }
 
     if (sign != -1) board[row*3 + column] = sign;
+
     turn++;
+//    addedTicks.push(tick)
 
     if(checkVictory(sign)){
         gameOver = true;
 
-        console.log(players[sign] + " just won")
+        main.showDialog(players[sign])
     }
 }
 
