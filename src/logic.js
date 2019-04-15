@@ -4,10 +4,12 @@
 var xComponent;
 var oComponent;
 
-var board;
+// an array containing strings of the symbols added
+var board = new Array(9)
 var gameOver;
 var turn;
-var addedTicks;
+// an array containing the qml objects added (the ticks)
+var addedTicks = new Array(9);
 
 // order must follow game consecution (accessed using XSIGN and YSIGN)
 const players = ["X", "O"];
@@ -22,18 +24,18 @@ const SIGN  = {
 function startMatch(){
     main.hideDialog();
 
-    board = new Array(9)
+    console.log("clearing board")
 
-//    if(addedTicks === null) addedTicks = new Array(0)
-//    else {
-//        console.log("clearing board")
+    // destroying objects
+    for(var i=0; i<9; i++){
+        tickTmp = addedTicks[i]
+        if (tickTmp != null) {
+            tickTmp.destroy()
+            addedTicks[i] = null
+        }
+    }
 
-//        var elem
-//        while((elem = addedTicks.pop()) !== null){
-//            destroy(elem)
-//        }
-//    }
-
+    //clearing symbols
     for(var i=0; i<9; i++){
         board[i] = SIGN.EMPTY;
     }
@@ -57,7 +59,7 @@ function clicked(row, column){
     if (sign != -1) board[row*3 + column] = sign;
 
     turn++;
-//    addedTicks.push(tick)
+    addedTicks[row*3 + column] = tick
 
     if(checkVictory(sign)){
         gameOver = true;
@@ -74,12 +76,12 @@ function createO(row, column){
         var dynamicObject = oComponent.createObject(main,
                                                     {x: Util.getCellX(column/2),
                                                      y: Util.getCellX(row/2)});
-            if (dynamicObject == null) {
-                console.log("error creating block");
-                console.log(oComponent.errorString());
-                return null;
-            }
-            return dynamicObject;
+        if (dynamicObject == null) {
+            console.log("error creating block");
+            console.log(oComponent.errorString());
+            return null;
+        }
+        return dynamicObject;
     }
     else{
         console.log("error loading o block component");
@@ -96,12 +98,12 @@ function createX(row, column){
         var dynamicObject = xComponent.createObject(main,
                                                     {x: Util.getCellX(column/2),
                                                      y: Util.getCellX(row/2)});
-            if (dynamicObject == null) {
-                console.log("error creating block");
-                console.log(xComponent.errorString());
-                return null;
-            }
-            return dynamicObject;
+        if (dynamicObject == null) {
+            console.log("error creating block");
+            console.log(xComponent.errorString());
+            return null;
+        }
+        return dynamicObject;
     }
     else{
         console.log("error loading x block component");
