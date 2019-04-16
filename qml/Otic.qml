@@ -16,7 +16,7 @@ Item {
             fillColor: "transparent"
 
             strokeWidth: lineWidth
-            strokeColor: oSP.midlight
+            strokeColor: oSP.text
 
             PathArc {
                 x: otic.x + boxWidth/2; y: otic.y + boxHeight
@@ -33,7 +33,7 @@ Item {
             fillColor: "transparent"
 
             strokeWidth: lineWidth
-            strokeColor: oSP.midlight
+            strokeColor: oSP.text
 
             PathArc {
                 x: otic.x + boxWidth/2; y: otic.y

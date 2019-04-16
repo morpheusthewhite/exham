@@ -15,7 +15,7 @@ Item {
             startX: x
             startY: y
             strokeWidth: lineWidth
-            strokeColor: xSP.midlight
+            strokeColor: xSP.text
 
             PathLine{
                 relativeX: x + boxWidth
@@ -28,7 +28,7 @@ Item {
             startX: x
             startY: y + boxHeight
             strokeWidth: lineWidth
-            strokeColor: xSP.midlight
+            strokeColor: xSP.text
 
             PathLine{
                 relativeX: x + boxWidth
