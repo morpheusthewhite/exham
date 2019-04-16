@@ -27,6 +27,7 @@ function startMatch(){
     console.log("clearing board")
 
     // destroying objects
+    var tickTmp
     for(var i=0; i<9; i++){
         tickTmp = addedTicks[i]
         if (tickTmp != null) {
