@@ -8,6 +8,7 @@ var oComponent;
 var board = new Array(9)
 var gameOver;
 var turn;
+var startingPlayer = -1;
 // an array containing the qml objects added (the ticks)
 var addedTicks = new Array(9);
 
@@ -43,6 +44,7 @@ function startMatch(){
 
     gameOver = false;
     turn = 0;
+    startingPlayer++;
 
     console.log("Match started")
 }
@@ -54,7 +56,7 @@ function clicked(row, column){
     var sign = -1;
     var tick;
 
-    if(turn%2 == 0) { if((tick=createX(row, column)) !== null) sign = SIGN.XSIGN}
+    if((turn + startingPlayer)%2 == 0) { if((tick=createX(row, column)) !== null) sign = SIGN.XSIGN}
     else { if((tick=createO(row, column)) !== null) sign = SIGN.YSIGN }
 
     if (sign != -1) board[row*3 + column] = sign;
