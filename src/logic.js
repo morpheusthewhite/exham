@@ -15,11 +15,119 @@ var addedTicks = new Array(9);
 // order must follow game consecution (accessed using XSIGN and YSIGN)
 const players = ["X", "O"];
 
+const CENTER = 4
+const VERTICES = [0, 2, 6, 8]
+const SEMIVERTICES = [1, 3, 5, 7]
+
 const SIGN  = {
     XSIGN: 0,
-    YSIGN: 1,
+    OSIGN: 1,
     EMPTY: 2
 };
+
+function row(index){ return Math.floor(index/3) }
+function column(index){ return index%3 }
+
+// returns the position of the possible score of the given player is exists, -1 otherwise
+function possibleWin(sign){
+    for(var i=0; i<9; i++){
+        if(board[i] !== SIGN.EMPTY) continue
+
+        board[i] = sign
+        if(checkVictory(sign)){
+            board[i] = SIGN.EMPTY
+            return i;
+        }
+
+        board[i] = SIGN.EMPTY
+    }
+
+    return -1;
+}
+
+function hasOppositeVertices(sign){
+    return board[0] === board[8] && board[0] === sign ||
+            board[2] === board[6] && board[2] === sign
+}
+
+function hasNearSemivertexes(sign){
+    var first, second
+    for(var i=0; i<9; i++){
+        if(board[i] === sign) { first = i; break; }
+    }
+    i++;
+    for(; i<9; i++){
+        if(board[i] === sign) { second = i; break; }
+    }
+
+    if(SEMIVERTICES.includes(first) && SEMIVERTICES.includes(second) && first + second != 8) {
+        for(var elem in VERTICES){
+            var index = VERTICES[elem]
+            if(board[index] !== SIGN.EMPTY) continue
+
+            if((column(index) === column(first) || row(index) === row(first)) &&
+                    (column(index) === column(second) || row(index) === row(second))){
+                return index;
+            }
+        }
+    }
+
+    return -1;
+}
+
+// returns the position of the L countermeasure if it is present, -1 otherwise (makes sense only in the second turn)
+function hasL(sign){
+    // the position of the first of the 2 ticks
+    var first;
+    for(var i=0; i<6; i++){
+        if(board[i] === sign) { first = i; break; }
+
+        if(i === 5) return -1;
+    }
+
+    if(first + 5 < 9 && board[first +5] === sign) {
+        if(first%3 === 0) return 2 + Math.floor(first/3) * 4;
+        else return (first%3 - 1)*8
+    }
+    else if(first + 7 < 9 && board[first + 7] === sign) return first + 1 + 5 * (1 - first%3);
+    else if(first % 3 === 2 && board[first + 1] === sign) return 8 * Math.floor(first/3);
+
+    return -1;
+}
+
+function bareAttack(sign){
+    if(possibleWin(sign) > -1) return possibleWin(sign)
+    for(var i=0; i<9; i++){
+        if(board[i] !== SIGN.EMPTY) continue
+
+        board[i] = sign
+        if(possibleWin(sign) > 0) {
+            board[i] = SIGN.EMPTY
+            return i
+        }
+
+        board[i] = SIGN.EMPTY
+    }
+
+    // no attack is possible
+    for(i=0; i<9; i++){
+        if(board[i] === SIGN.EMPTY) return i
+    }
+}
+
+function nextMoveAsSecond(){
+    if(board[CENTER] === SIGN.EMPTY){
+        return CENTER;
+    }
+    // if it's the first turn and the center is occupied I'll go for one of the vertex
+    else if(turn === 0) return VERTICES[Math.floor(Math.random() * VERTICES.length)];
+    else if(possibleWin(SIGN.OSIGN) > 0) return possibleWin(SIGN.OSIGN)
+    else if(possibleWin(SIGN.XSIGN) > 0) return possibleWin(SIGN.XSIGN)
+    else if(turn === 1 && hasOppositeVertices(SIGN.XSIGN)) return SEMIVERTICES[Math.floor(Math.random() * VERTICES.length)]
+    else if(turn === 1 && hasL(SIGN.XSIGN) !== -1) return hasL(SIGN.XSIGN)
+    else if(turn === 1 && hasNearSemivertexes(SIGN.XSIGN)) return hasNearSemivertexes(SIGN.XSIGN);
+    else return bareAttack(SIGN.OSIGN)
+}
 
 // starts the match by resetting the board
 function startMatch(){
@@ -49,26 +157,45 @@ function startMatch(){
     console.log("Match started")
 }
 
+function addTick(sign, row, column){
+    var tick;
+    if(sign === SIGN.XSIGN){
+        if((tick=createX(row, column)) === null) return
+    }
+    else{
+        if((tick=createO(row, column)) === null) return
+    }
+
+    board[row*3 + column] = sign;
+    addedTicks[row*3 + column] = tick
+}
+
 // handles the click in a certain cell
 function clicked(row, column){
     if(board[row*3 + column] !== SIGN.EMPTY || gameOver) return
 
-    var sign = -1;
-    var tick;
-
-    if((turn + startingPlayer)%2 == 0) { if((tick=createX(row, column)) !== null) sign = SIGN.XSIGN}
-    else { if((tick=createO(row, column)) !== null) sign = SIGN.YSIGN }
-
-    if (sign != -1) board[row*3 + column] = sign;
-
-    turn++;
-    addedTicks[row*3 + column] = tick
-
-    if(checkVictory(sign)){
+    addTick(SIGN.XSIGN, row, column);
+    if(checkVictory(SIGN.XSIGN)){
         gameOver = true;
 
-        main.showDialog(players[sign])
+        main.showDialog(players[SIGN.XSIGN])
+
+        return;
     }
+
+    var pos = nextMoveAsSecond();
+    if(pos >= 0) addTick(SIGN.OSIGN, Math.floor(pos/3), pos%3);
+    else return;
+
+    if(checkVictory(SIGN.OSIGN)){
+        gameOver = true;
+
+        main.showDialog(players[SIGN.OSIGN])
+
+        return;
+    }
+
+    turn++;
 }
 
 // creates an O in the given position
