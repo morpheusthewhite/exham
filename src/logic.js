@@ -86,11 +86,11 @@ function hasL(sign){
     }
 
     if(first + 5 < 9 && board[first +5] === sign) {
-        if(first%3 === 0) return 2 + Math.floor(first/3) * 4;
-        else return (first%3 - 1)*8
+        if(column(first) === 0) return 2 + row(first) * 4;
+        else return (column(first) - 1)*8
     }
-    else if(first + 7 < 9 && board[first + 7] === sign) return first + 1 + 5 * (1 - first%3);
-    else if(first % 3 === 2 && board[first + 1] === sign) return 8 * Math.floor(first/3);
+    else if(first + 7 < 9 && board[first + 7] === sign) return first + 1 + 5 * (1 - column(first));
+    else if(first % 3 === 2 && board[first + 1] === sign) return 8 * row(first);
 
     return -1;
 }
