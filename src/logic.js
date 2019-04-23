@@ -95,13 +95,21 @@ function hasL(sign){
     return -1;
 }
 
+function hasVertex(sign){
+    for(var i=0; i<VERTICES.length; i++){
+        if(board[VERTICES[i]] === sign) return true;
+    }
+
+    return false;
+}
+
 function bareAttack(sign){
     if(possibleWin(sign) > -1) return possibleWin(sign)
     for(var i=0; i<9; i++){
         if(board[i] !== SIGN.EMPTY) continue
 
         board[i] = sign
-        if(possibleWin(sign) > 0) {
+        if(possibleWin(sign) >= 0) {
             board[i] = SIGN.EMPTY
             return i
         }
@@ -109,10 +117,7 @@ function bareAttack(sign){
         board[i] = SIGN.EMPTY
     }
 
-    // no attack is possible
-    for(i=0; i<9; i++){
-        if(board[i] === SIGN.EMPTY) return i
-    }
+    return -1;
 }
 
 function nextMoveAsSecond(){
@@ -121,12 +126,71 @@ function nextMoveAsSecond(){
     }
     // if it's the first turn and the center is occupied I'll go for one of the vertex
     else if(turn === 0) return VERTICES[Math.floor(Math.random() * VERTICES.length)];
-    else if(possibleWin(SIGN.OSIGN) > 0) return possibleWin(SIGN.OSIGN)
-    else if(possibleWin(SIGN.XSIGN) > 0) return possibleWin(SIGN.XSIGN)
+    else if(possibleWin(SIGN.OSIGN) >= 0) return possibleWin(SIGN.OSIGN)
+    else if(possibleWin(SIGN.XSIGN) >= 0) return possibleWin(SIGN.XSIGN)
     else if(turn === 1 && hasOppositeVertices(SIGN.XSIGN)) return SEMIVERTICES[Math.floor(Math.random() * VERTICES.length)]
     else if(turn === 1 && hasL(SIGN.XSIGN) !== -1) return hasL(SIGN.XSIGN)
     else if(turn === 1 && hasNearSemivertexes(SIGN.XSIGN)) return hasNearSemivertexes(SIGN.XSIGN);
-    else return bareAttack(SIGN.OSIGN)
+    else if(bareAttack(SIGN.OSIGN) !== -1) return bareAttack(SIGN.OSIGN)
+    else return getRandomFreePosition()
+}
+
+function createL(sign){
+    for(var i=0; i<9; i++){
+        if(board[i] !== SIGN.EMPTY) continue;
+        board[i] = sign;
+
+        if(hasL(sign) >= 0){
+            board[i] = SIGN.EMPTY
+
+            return i;
+        }
+
+        board[i] = SIGN.EMPTY;
+    }
+
+    console.log("No L possible");
+    return -1;
+}
+
+function createNearSemivertices(sign){
+    for(var i=0; i<9; i++){
+        if(board[i] !== SIGN.EMPTY) continue;
+        board[i] = sign;
+
+        if(hasNearSemivertexes(sign) >= 0){
+            board[i] = SIGN.EMPTY
+
+            return i;
+        }
+
+        board[i] = SIGN.EMPTY;
+    }
+
+    console.log("No sv possible")
+    return -1;
+}
+
+function getRandomFreePosition(){
+    var freeArrayList = new Array(0);
+    for(var i=0; i<9; i++){
+        if(board[i] === SIGN.EMPTY) freeArrayList.push(i)
+    }
+
+    return freeArrayList[Math.floor(Math.random() * freeArrayList.length)]
+}
+
+function nextMoveAsFirst(){
+    // starting with a random move
+    if(turn === 0) return Math.floor(Math.random() * 9);
+    else if (possibleWin(SIGN.OSIGN) >= 0) return possibleWin(SIGN.OSIGN)
+    else if(possibleWin(SIGN.XSIGN) >= 0) return possibleWin(SIGN.XSIGN)
+    else if (turn === 1 && board[CENTER] === SIGN.OSIGN) return getRandomFreePosition()
+    else if (turn === 1){
+        if(Math.random() > 0.5 || hasVertex(SIGN.OSIGN)) return createL(SIGN.OSIGN)
+        else return createNearSemivertices(SIGN.OSIGN)
+    }
+    else return getRandomFreePosition()
 }
 
 // starts the match by resetting the board
@@ -152,9 +216,16 @@ function startMatch(){
 
     gameOver = false;
     turn = 0;
-    startingPlayer++;
+    startingPlayer = (startingPlayer + 1) % 2;
 
     console.log("Match started")
+
+    if(startingPlayer === 1) {
+        var pos = nextMoveAsFirst()
+        addTick(SIGN.OSIGN, row(pos), column(pos));
+
+        turn++;
+    }
 }
 
 function addTick(sign, row, column){
@@ -183,7 +254,11 @@ function clicked(row, column){
         return;
     }
 
-    var pos = nextMoveAsSecond();
+    var pos;
+    if(startingPlayer === 0) pos = nextMoveAsSecond();
+    else pos = nextMoveAsFirst()
+    console.log(pos)
+
     if(pos >= 0) addTick(SIGN.OSIGN, Math.floor(pos/3), pos%3);
     else return;
 
@@ -195,7 +270,8 @@ function clicked(row, column){
         return;
     }
 
-    turn++;
+    turn+=1;
+    console.log(turn)
 }
 
 // creates an O in the given position
